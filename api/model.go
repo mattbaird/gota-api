@@ -142,7 +142,10 @@ type LeaguePlayer struct {
 	HeroId    int    `json:"hero_id"`
 	Team      int    `json:"team"`
 }
-
+type Teams struct {
+	Status int    `json:"status"`
+	Teams  []Team `json:"teams"`
+}
 type Team struct {
 	Name                         string `json:"team_name"`
 	Id                           int    `json:"team_id"`
@@ -151,7 +154,7 @@ type Team struct {
 	Tag                          string `json:"tag,omitempty"`
 	CreatedAt                    int64  `json:"time_created,omitempty"`
 	Rating                       string `json:"rating,omitempty"`
-	Sponsor                      string `json:"logo_sponsor,omitempty"`
+	Sponsor                      int64  `json:"logo_sponsor,omitempty"`
 	CountryCode                  string `json:"country_code,omitempty"`
 	Url                          string `json:"url,omitempty"`
 	GamesPlayedWithCurrentRoster int    `json:"games_played_with_current_roster,omitempty"`
@@ -161,6 +164,32 @@ type Team struct {
 	Player4Id                    int    `json:"player_4_account_id,omitempty"`
 	Player5Id                    int    `json:"player_5_account_id,omitempty"`
 	AdminAccountId               int    `json:"admin_account_id,omitempty"`
+	LeagueId0                    int    `json:"league_id_0,omitempty"`
+	LeagueId1                    int    `json:"league_id_1,omitempty"`
+	LeagueId2                    int    `json:"league_id_2,omitempty"`
+	LeagueId3                    int    `json:"league_id_3,omitempty"`
+	LeagueId4                    int    `json:"league_id_4,omitempty"`
+	LeagueId5                    int    `json:"league_id_5,omitempty"`
+	LeagueId6                    int    `json:"league_id_6,omitempty"`
+	LeagueId7                    int    `json:"league_id_7,omitempty"`
+	LeagueId8                    int    `json:"league_id_8,omitempty"`
+	LeagueId9                    int    `json:"league_id_9,omitempty"`
+	LeagueId10                   int    `json:"league_id_10,omitempty"`
+	LeagueId11                   int    `json:"league_id_11,omitempty"`
+	LeagueId12                   int    `json:"league_id_12,omitempty"`
+	LeagueId13                   int    `json:"league_id_13,omitempty"`
+	LeagueId14                   int    `json:"league_id_14,omitempty"`
+	LeagueId15                   int    `json:"league_id_15,omitempty"`
+	LeagueId16                   int    `json:"league_id_16,omitempty"`
+	LeagueId17                   int    `json:"league_id_17,omitempty"`
+	LeagueId18                   int    `json:"league_id_18,omitempty"`
+	LeagueId19                   int    `json:"league_id_19,omitempty"`
+	LeagueId20                   int    `json:"league_id_20,omitempty"`
+	LeagueId21                   int    `json:"league_id_21,omitempty"`
+	LeagueId22                   int    `json:"league_id_22,omitempty"`
+	LeagueId23                   int    `json:"league_id_23,omitempty"`
+	LeagueId24                   int    `json:"league_id_24,omitempty"`
+	LeagueId25                   int    `json:"league_id_25,omitempty"`
 }
 
 type SteamUsers struct {

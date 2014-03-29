@@ -87,7 +87,7 @@ func main() {
 			Usage:       "./gota-api mhs [options]",
 			Description: "Get heroes",
 			Flags: []cli.Flag{
-				cli.IntFlag{"startAtMatchSeqNum", -1, "The match ID to start at. Example 27110133"},
+				cli.IntFlag{"startAtMatchSeqNum", 1, "The match ID to start at. Example 27110133"},
 				cli.IntFlag{"matchesRequested", -1, "The number of matches to get"},
 			},
 			Action: func(c *cli.Context) {

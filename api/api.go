@@ -231,8 +231,8 @@ func (api *GotaAPI) GetLiveLeagueGames() (LeagueGames, error) {
 	}
 	return retval, err
 }
-func (api *GotaAPI) GetTeamInfoByTeamID(startAtTeamId int, teamsRequested int) (Team, error) {
-	var retval Team = Team{}
+func (api *GotaAPI) GetTeamInfoByTeamID(startAtTeamId int, teamsRequested int) (Teams, error) {
+	var retval Teams = Teams{}
 	parameters := make(map[string]interface{})
 	if startAtTeamId <= 0 {
 		return retval, fmt.Errorf("invalid startAtTeamId :%v", startAtTeamId)
