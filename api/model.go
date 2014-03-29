@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 )
@@ -14,8 +15,8 @@ func (e APIError) Error() string {
 	return fmt.Sprintf("%v: %v", e.Code, e.Err)
 }
 
-type MatchResult struct {
-	Result MatchHistory `json:"result"`
+type Result struct {
+	Result json.RawMessage `json:"result"`
 }
 
 type MatchHistory struct {
@@ -117,7 +118,8 @@ type League struct {
 	Name          string `json:"name"`
 	Id            int    `json:"leagueid"`
 	Description   string `json:"description"`
-	TournamentUrl int    `json:"tournament_url"`
+	TournamentUrl string `json:"tournament_url"`
+	ItemDef       int    `json:"itemdef,omitempty"`
 }
 
 type LeagueGames struct {
@@ -128,7 +130,7 @@ type Game struct {
 	Players    []LeaguePlayer `json:"players"`
 	Radiant    Team           `json:"radiant_team"`
 	Dire       Team           `json:"dire_team"`
-	LobbyId    int            `json:"lobby_id"`
+	LobbyId    int64          `json:"lobby_id"`
 	Spectators int            `json:"spectators"`
 	TowerState uint           `json:"tower_state"`
 	LeagueId   int            `json:"league_id"`
@@ -143,8 +145,8 @@ type LeaguePlayer struct {
 
 type Team struct {
 	Name                         string `json:"team_name"`
-	Id                           string `json:"team_id"`
-	Logo                         string `json:"team_logo"`
+	Id                           int    `json:"team_id"`
+	Logo                         int64  `json:"team_logo"`
 	Complete                     bool   `json:"complete,omitempty"`
 	Tag                          string `json:"tag,omitempty"`
 	CreatedAt                    int64  `json:"time_created,omitempty"`
