@@ -14,7 +14,7 @@ func main() {
 		{
 			Name:        "GetMatchHistory",
 			ShortName:   "mh",
-			Usage:       "./gota-api mh [options]",
+			Usage:       "./gota-api mh [playerName] [heroId] [gameMode] [skill] [dateMin] [dateMax] [minPlayers] [accountId] [leagueId] [matchesRequested] [tournamentGamesOnly]",
 			Description: "Request Match history",
 			Flags: []cli.Flag{
 				cli.IntFlag{"startAt", -1, "The match ID to start retrieval. Optional. Example 27110133"},
@@ -61,7 +61,7 @@ func main() {
 		{
 			Name:        "GetMatchDetails",
 			ShortName:   "md",
-			Usage:       "./gota-api md matchId",
+			Usage:       "./gota-api md [matchId]",
 			Description: "Request Match Details",
 			Flags: []cli.Flag{
 				cli.IntFlag{"matchId", -1, "The match ID to get details for. Example 27110133"},
@@ -84,7 +84,7 @@ func main() {
 		{
 			Name:        "GetMatchHistoryBySequenceNum",
 			ShortName:   "mhs",
-			Usage:       "./gota-api mhs [options]",
+			Usage:       "./gota-api mhs [startAtMatchSeqNum] [matchesRequested]",
 			Description: "Get heroes",
 			Flags: []cli.Flag{
 				cli.IntFlag{"startAtMatchSeqNum", 1, "The match ID to start at. Example 27110133"},
@@ -169,7 +169,7 @@ func main() {
 		{
 			Name:        "GetTeamInfoByTeamID",
 			ShortName:   "ti",
-			Usage:       "./gota-api ti [options]",
+			Usage:       "./gota-api ti [startAtTeamId] [teamsRequested]",
 			Description: "Get Team Information by ID",
 			Flags: []cli.Flag{
 				cli.IntFlag{"startAtTeamId", -1, "Which Team ID to start at."},
