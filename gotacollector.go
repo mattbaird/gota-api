@@ -17,19 +17,19 @@ func main() {
 			Usage:       "./gota-api mh [playerName] [heroId] [gameMode] [skill] [dateMin] [dateMax] [minPlayers] [accountId] [leagueId] [matchesRequested] [tournamentGamesOnly]",
 			Description: "Request Match history",
 			Flags: []cli.Flag{
-				cli.IntFlag{"startAt", -1, "The match ID to start retrieval. Optional. Example 27110133"},
+				cli.IntFlag{Name: "startAt", Value: -1, Usage: "The match ID to start retrieval. Optional. Example 27110133"},
 				// the following are optional
-				cli.StringFlag{"playerName", "", ""},
-				cli.IntFlag{"heroId", -1, ""},
-				cli.StringFlag{"gameMode", "", ""},
-				cli.StringFlag{"skill", "", ""},
-				cli.StringFlag{"dateMin", "", ""},
-				cli.StringFlag{"dateMax", "", ""},
-				cli.IntFlag{"minPlayers", -1, ""},
-				cli.IntFlag{"accountId", -1, ""},
-				cli.StringFlag{"leagueId", "", ""},
-				cli.IntFlag{"matchesRequested", -1, ""},
-				cli.BoolFlag{"tournamentGamesOnly", "false"},
+				cli.StringFlag{Name: "playerName", Value: "", Usage: ""},
+				cli.IntFlag{Name: "heroId", Value: -1, Usage: ""},
+				cli.StringFlag{Name: "gameMode", Value: "", Usage: ""},
+				cli.StringFlag{Name: "skill", Value: "", Usage: ""},
+				cli.StringFlag{Name: "dateMin", Value: "", Usage: ""},
+				cli.StringFlag{Name: "dateMax", Value: "", Usage: ""},
+				cli.IntFlag{Name: "minPlayers", Value: -1, Usage: ""},
+				cli.IntFlag{Name: "accountId", Value: -1, Usage: ""},
+				cli.StringFlag{Name: "leagueId", Value: "", Usage: ""},
+				cli.IntFlag{Name: "matchesRequested", Value: -1, Usage: ""},
+				cli.BoolFlag{Name: "tournamentGamesOnly"},
 			},
 			Action: func(c *cli.Context) {
 				startAtMatchId := c.Int("startAt")
@@ -61,10 +61,10 @@ func main() {
 		{
 			Name:        "GetMatchDetails",
 			ShortName:   "md",
-			Usage:       "./gota-api md [matchId]",
+			Usage:       "./gota-api md --matchId [matchId]",
 			Description: "Request Match Details",
 			Flags: []cli.Flag{
-				cli.IntFlag{"matchId", -1, "The match ID to get details for. Example 27110133"},
+				cli.IntFlag{Name: "matchId", Value: -1, Usage: "The match ID to get details for. Example 27110133"},
 			},
 			Action: func(c *cli.Context) {
 				matchId := c.Int("matchId")
@@ -87,8 +87,8 @@ func main() {
 			Usage:       "./gota-api mhs [startAtMatchSeqNum] [matchesRequested]",
 			Description: "Get heroes",
 			Flags: []cli.Flag{
-				cli.IntFlag{"startAtMatchSeqNum", 1, "The match ID to start at. Example 27110133"},
-				cli.IntFlag{"matchesRequested", -1, "The number of matches to get"},
+				cli.IntFlag{Name: "startAtMatchSeqNum", Value: 1, Usage: "The match ID to start at. Example 27110133"},
+				cli.IntFlag{Name: "matchesRequested", Value: -1, Usage: "The number of matches to get"},
 			},
 			Action: func(c *cli.Context) {
 				startAtMatchSeqNum := c.Int("startAtMatchSeqNum")
@@ -172,8 +172,8 @@ func main() {
 			Usage:       "./gota-api ti [startAtTeamId] [teamsRequested]",
 			Description: "Get Team Information by ID",
 			Flags: []cli.Flag{
-				cli.IntFlag{"startAtTeamId", -1, "Which Team ID to start at."},
-				cli.IntFlag{"teamsRequested", -1, "Number of teams to retrieve"},
+				cli.IntFlag{Name: "startAtTeamId", Value: -1, Usage: "Which Team ID to start at."},
+				cli.IntFlag{Name: "teamsRequested", Value: -1, Usage: "Number of teams to retrieve"},
 			},
 			Action: func(c *cli.Context) {
 				startAtTeamId := c.Int("startAtTeamId")
@@ -197,7 +197,7 @@ func main() {
 			Usage:       "./gota-api ps [ids]",
 			Description: "Get Play Summaries",
 			Flags: []cli.Flag{
-				cli.IntSliceFlag{"ids", nil, "Comma separated array of user ids"},
+				cli.IntSliceFlag{Name: "ids", Value: nil, Usage: "Comma separated array of user ids"},
 			},
 			Action: func(c *cli.Context) {
 				ids := c.IntSlice("ids")

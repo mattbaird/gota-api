@@ -58,11 +58,13 @@ type MatchDetail struct {
 	Cluster               int            `json:"cluster"`
 	FirstBloodTime        int            `json:"first_blood_time"`
 	HumanPlayers          int            `json:"human_players"`
-	LobbyTYpe             int            `json:"lobby_type"`
+	LobbyType             int            `json:"lobby_type"`
 	LeagueId              int            `json:"leagueid"`
 	PositiveVotes         int            `json:"positive_votes"`
 	NegativeVotes         int            `json:"negative_votes"`
 	GameMode              int            `json:"game_mode"`
+	RadiantCaptain        int            `json:"game_mode,omit_empty"`
+	DireCaptain           int            `json:"game_mode,omit_empty"`
 	Players               []PlayerDetail `json:"players"`
 }
 
