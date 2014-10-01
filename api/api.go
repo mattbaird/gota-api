@@ -15,10 +15,20 @@ const dota_api_host string = "api.steampowered.com"
 const dota_api_path string = "/DOTA_API_PREFIX/DOTA_API_COMMAND/DOTA_API_VERSION/"
 const gota_api_key_param = "key={{key}}"
 const version string = "v0001"
+const api_remote_storage_prefix string = "ISteamRemoteStorage"
 const api_match_prefix string = "IDOTA2Match_570"
+const api_match_prefix_debug string = "IDOTA2Match_205790"
 const api_econ_prefix string = "IEconDOTA2_570"
-const debug bool = true
+const debug bool = false
+const use_debug_service = true
 
+func getApiMatchPrefix() string {
+	if debug || use_debug_service {
+		return api_match_prefix_debug
+	} else {
+		return api_match_prefix
+	}
+}
 func NewGotaAPI(apiKey string, lang string) (*GotaAPI, error) {
 	path := strings.Replace(dota_api_path, "DOTA_API_VERSION", version, -1)
 	u := url.URL{}
@@ -73,29 +83,30 @@ func runGota(api *GotaAPI, command string, apiPrefix string, parameters map[stri
 	if debug {
 		log.Printf("Request URL:%s", requestUrl)
 	}
-	return runGotaRaw(api, requestUrl)
+	var result Result
+	err := runGotaRaw(api, requestUrl, &result)
+	return result, err
 }
 
-func runGotaRaw(api *GotaAPI, requestUrl string) (Result, error) {
+func runGotaRaw(api *GotaAPI, requestUrl string, r interface{}) error {
 	client := &http.Client{Transport: api.Transport}
 	resp, err := client.Get(requestUrl)
 	if err != nil {
-		return Result{}, err
+		return err
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return Result{}, err
+		return err
 	}
 	if debug {
 		log.Printf("Response Body:%s", string(body))
 	}
 	if err = errorCheck(body); err != nil {
-		return Result{}, err
+		return err
 	}
-	var result Result
-	err = json.Unmarshal(body, &result)
-	return result, err
+	err = json.Unmarshal(body, &r)
+	return err
 }
 
 func errorCheck(body []byte) error {
@@ -153,7 +164,7 @@ func (api *GotaAPI) GetMatchHistory(playerName string, heroId int, gameMode stri
 	var retval MatchHistory = MatchHistory{}
 	var err error = nil
 	var result Result
-	result, err = runGota(api, "GetMatchHistory", api_match_prefix, parameters)
+	result, err = runGota(api, "GetMatchHistory", getApiMatchPrefix(), parameters)
 	if err == nil {
 		err = json.Unmarshal(result.Result, &retval)
 	}
@@ -170,14 +181,14 @@ func (api *GotaAPI) GetMatchDetails(matchId int) (MatchDetail, error) {
 
 	var err error = nil
 	var result Result
-	result, err = runGota(api, "GetMatchDetails", api_match_prefix, parameters)
+	result, err = runGota(api, "GetMatchDetails", getApiMatchPrefix(), parameters)
 	if err == nil {
 		err = json.Unmarshal(result.Result, &retval)
 	}
 	return retval, err
 }
 
-func (api *GotaAPI) GetMatchHistoryBySequenceNum(startAtMatchSeqNum int, matchesRequested int) (MatchHistory, error) {
+func (api *GotaAPI) GetMatchHistoryBySequenceNum(startAtMatchSeqNum int64, matchesRequested int) (MatchHistory, error) {
 	var retval MatchHistory = MatchHistory{}
 	parameters := make(map[string]interface{})
 	if startAtMatchSeqNum <= 0 {
@@ -189,7 +200,7 @@ func (api *GotaAPI) GetMatchHistoryBySequenceNum(startAtMatchSeqNum int, matches
 	}
 	var err error = nil
 	var result Result
-	result, err = runGota(api, "GetMatchHistoryBySequenceNum", api_match_prefix, parameters)
+	result, err = runGota(api, "GetMatchHistoryBySequenceNum", getApiMatchPrefix(), parameters)
 	if err == nil {
 		err = json.Unmarshal(result.Result, &retval)
 	}
@@ -199,6 +210,7 @@ func (api *GotaAPI) GetMatchHistoryBySequenceNum(startAtMatchSeqNum int, matches
 func (api *GotaAPI) GetHeroes() (Heroes, error) {
 	var retval Heroes = Heroes{}
 	parameters := make(map[string]interface{})
+	parameters["language"] = "en_us"
 	var err error = nil
 	var result Result
 	result, err = runGota(api, "GetHeroes", api_econ_prefix, parameters)
@@ -213,7 +225,7 @@ func (api *GotaAPI) GetLeagueListing() (Leagues, error) {
 	parameters := make(map[string]interface{})
 	var err error = nil
 	var result Result
-	result, err = runGota(api, "GetLeagueListing", api_match_prefix, parameters)
+	result, err = runGota(api, "GetLeagueListing", getApiMatchPrefix(), parameters)
 	if err == nil {
 		err = json.Unmarshal(result.Result, &retval)
 	}
@@ -225,12 +237,13 @@ func (api *GotaAPI) GetLiveLeagueGames() (LeagueGames, error) {
 	parameters := make(map[string]interface{})
 	var err error = nil
 	var result Result
-	result, err = runGota(api, "GetLiveLeagueGames", api_match_prefix, parameters)
+	result, err = runGota(api, "GetLiveLeagueGames", getApiMatchPrefix(), parameters)
 	if err == nil {
 		err = json.Unmarshal(result.Result, &retval)
 	}
 	return retval, err
 }
+
 func (api *GotaAPI) GetTeamInfoByTeamID(startAtTeamId int, teamsRequested int) (Teams, error) {
 	var retval Teams = Teams{}
 	parameters := make(map[string]interface{})
@@ -243,7 +256,7 @@ func (api *GotaAPI) GetTeamInfoByTeamID(startAtTeamId int, teamsRequested int) (
 	}
 	var err error = nil
 	var result Result
-	result, err = runGota(api, "GetTeamInfoByTeamID", api_match_prefix, parameters)
+	result, err = runGota(api, "GetTeamInfoByTeamID", getApiMatchPrefix(), parameters)
 	if err == nil {
 		err = json.Unmarshal(result.Result, &retval)
 	}
@@ -255,24 +268,37 @@ func (api *GotaAPI) GetPlayerSummaries(ids ...int) (SteamUsers, error) {
 	var idArray string
 	for i, id := range ids {
 		if i == 0 {
-			idArray = fmt.Sprintf("%v", translateSteamId(id))
+			idArray = fmt.Sprintf("%v", TranslateSteamId(id))
 		} else {
-			idArray += "," + fmt.Sprintf("%v", translateSteamId(id))
+			idArray += "," + fmt.Sprintf("%v", TranslateSteamId(id))
 		}
 	}
 	requestUrl := fmt.Sprintf("https://%s/ISteamUser/GetPlayerSummaries/v0002/?key=%s&steamids=%s", dota_api_host, api.Key, idArray)
+	if debug {
+		fmt.Printf("GetPlayerSummaries:%s\n", requestUrl)
+	}
+	var err error = nil
+	var response Response
+	err = runGotaRaw(api, requestUrl, &response)
+	if err == nil {
+		err = json.Unmarshal(response.Response, &retval)
+	}
+	return retval, err
+}
+
+func (api *GotaAPI) GetRemoveFileDetails(ugcId int64) (UGCFileDetails, error) {
+	var retval UGCFileDetails = UGCFileDetails{}
+	parameters := make(map[string]interface{})
+	parameters["ugcid"] = ugcId
 	var err error = nil
 	var result Result
-	result, err = runGotaRaw(api, requestUrl)
+	result, err = runGota(api, "GetUGCFileDetails", api_remote_storage_prefix, parameters)
 	if err == nil {
 		err = json.Unmarshal(result.Result, &retval)
 	}
 	return retval, err
 }
 
-func translateSteamId(id int) int {
-	tempId := id * 2
-	tempId = tempId + 1
-	tempId = tempId + 76561197960265728
-	return tempId
+func TranslateSteamId(id int) string {
+	return fmt.Sprintf("%v", id+76561197960265728)
 }

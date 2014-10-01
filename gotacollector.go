@@ -98,7 +98,8 @@ func main() {
 					fmt.Printf("Problem: %v", err)
 					os.Exit(1)
 				}
-				matchHistory, err := gotaApi.GetMatchHistoryBySequenceNum(startAtMatchSeqNum, matchesRequested)
+				var startAt64 int64 = int64(startAtMatchSeqNum)
+				matchHistory, err := gotaApi.GetMatchHistoryBySequenceNum(startAt64, matchesRequested)
 				if err != nil {
 					fmt.Printf("Error:%v", err)
 					os.Exit(1)
