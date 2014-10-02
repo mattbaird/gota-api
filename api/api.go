@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -8,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -297,6 +299,129 @@ func (api *GotaAPI) GetRemoveFileDetails(ugcId int64) (UGCFileDetails, error) {
 		err = json.Unmarshal(result.Result, &retval)
 	}
 	return retval, err
+}
+
+/**
+* get from: https://raw.githubusercontent.com/Holek/steam-friends-countries/master/data/steam_countries.json
+**/
+func (api *GotaAPI) GetGeoData() (GeoData, error) {
+	var retval GeoData = GeoData{}
+	var err error = nil
+	var raw map[string]interface{}
+	file, e := ioutil.ReadFile("./geo.json")
+	if e != nil {
+		fmt.Printf("File error: %v\n", e)
+		os.Exit(1)
+	}
+	json.Unmarshal(file, &raw)
+	retval.Countries = make(map[string]*Country)
+	for countryName, countryRaw := range raw {
+		country := countryRaw.(map[string]interface{})
+		retval.Countries[countryName] = &Country{Name: country["name"].(string)}
+		countries := raw[countryName].(map[string]interface{})
+		states := countries["states"].(map[string]interface{})
+		retval.Countries[countryName].States = make(map[string]*State)
+		if country["coordinates"] != nil {
+			long, lat, err := parseLongLat(country["coordinates"].(string))
+			if err != nil {
+				return retval, err
+			}
+			retval.Countries[countryName].Longitude = long
+			retval.Countries[countryName].Latitude = lat
+			retval.Countries[countryName].CoordinatesAccuracyLevel = country["coordinates_accuracy_level"].(string)
+		}
+		for stateAbbreviation, stateRaw := range states {
+			state := stateRaw.(map[string]interface{})
+			retval.Countries[countryName].States[stateAbbreviation] = &State{Name: state["name"].(string)}
+			cities := state["cities"].(map[string]interface{})
+			retval.Countries[countryName].States[stateAbbreviation].Cities = make(map[string]*City)
+			if state["coordinates"] != nil {
+				long, lat, err := parseLongLat(state["coordinates"].(string))
+				if err != nil {
+					return retval, err
+				}
+				retval.Countries[countryName].States[stateAbbreviation].Longitude = long
+				retval.Countries[countryName].States[stateAbbreviation].Latitude = lat
+				retval.Countries[countryName].States[stateAbbreviation].CoordinatesAccuracyLevel = state["coordinates_accuracy_level"].(string)
+			}
+
+			for cityId, cityRaw := range cities {
+				city := cityRaw.(map[string]interface{})
+				retval.Countries[countryName].States[stateAbbreviation].Cities[cityId] = &City{Name: city["name"].(string)}
+				if city["coordinates"] != nil {
+					long, lat, err := parseLongLat(city["coordinates"].(string))
+					if err != nil {
+						return retval, err
+					}
+					retval.Countries[countryName].States[stateAbbreviation].Cities[cityId].Longitude = long
+					retval.Countries[countryName].States[stateAbbreviation].Cities[cityId].Latitude = lat
+					retval.Countries[countryName].States[stateAbbreviation].Cities[cityId].CoordinatesAccuracyLevel = city["coordinates_accuracy_level"].(string)
+				}
+			}
+		}
+	}
+	return retval, err
+}
+
+func (api *GotaAPI) MakeGeoDataSVFile(filename string, separator string) error {
+	f, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	geoData, err := api.GetGeoData()
+	if err != nil {
+		return err
+	}
+	w := bufio.NewWriter(f)
+	for countryCode, country := range geoData.Countries {
+		for stateCode, state := range country.States {
+			for cityId, city := range state.Cities {
+				var rowArray []string
+				rowArray = append(rowArray, countryCode)
+				rowArray = append(rowArray, country.Name)
+				rowArray = append(rowArray, writeNumeric(country.Longitude))
+				rowArray = append(rowArray, writeNumeric(country.Latitude))
+				//				rowArray = append(rowArray, country.CoordinatesAccuracyLevel)
+				rowArray = append(rowArray, stateCode)
+				rowArray = append(rowArray, state.Name)
+				rowArray = append(rowArray, writeNumeric(state.Longitude))
+				rowArray = append(rowArray, writeNumeric(state.Latitude))
+				//				rowArray = append(rowArray, state.CoordinatesAccuracyLevel)
+				rowArray = append(rowArray, cityId)
+				rowArray = append(rowArray, city.Name)
+				rowArray = append(rowArray, writeNumeric(city.Longitude))
+				rowArray = append(rowArray, writeNumeric(city.Latitude))
+				//				rowArray = append(rowArray, city.CoordinatesAccuracyLevel)
+				row := strings.Join(rowArray, separator)
+				_, err = w.WriteString(row + "\n")
+			}
+		}
+	}
+	w.Flush()
+	return err
+}
+
+/**
+example: "59.64250000000001,-151.548333"
+*/
+func parseLongLat(longlat string) (float64, float64, error) {
+	if len(longlat) == 0 {
+		return 0, 0, nil
+	}
+	longAndLat := strings.Split(longlat, ",")
+	var long float64
+	var lat float64
+	var err error
+	long, err = strconv.ParseFloat(strings.TrimSpace(longAndLat[0]), 64)
+	if err != nil {
+		return long, lat, err
+	}
+	lat, err = strconv.ParseFloat(strings.TrimSpace(longAndLat[1]), 64)
+	if err != nil {
+		return long, lat, err
+	}
+	return long, lat, err
 }
 
 func TranslateSteamId(id int) string {

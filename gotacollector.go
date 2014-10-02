@@ -59,6 +59,50 @@ func main() {
 			},
 		},
 		{
+			Name:        "GetGeoData",
+			ShortName:   "ggd",
+			Usage:       "./gota-api ggd",
+			Description: "Get Steam Geo Data",
+			Flags:       []cli.Flag{},
+			Action: func(c *cli.Context) {
+				gotaApi, err := api.NewGotaAPI("", "en_us")
+				if err != nil {
+					fmt.Printf("Problem: %v", err)
+					os.Exit(1)
+				}
+				geoData, err := gotaApi.GetGeoData()
+				if err != nil {
+					fmt.Printf("Error:%v", err)
+					os.Exit(1)
+				}
+				fmt.Printf("cities: %v", len(geoData.Countries["US"].States["CA"].Cities))
+			},
+		},
+		{
+			Name:        "WriteGeoData",
+			ShortName:   "wgd",
+			Usage:       "./gota-api wgd filename",
+			Description: "Get & Write Geo Data",
+			Flags: []cli.Flag{
+				cli.StringFlag{Name: "fileName", Value: "", Usage: ""},
+			},
+			Action: func(c *cli.Context) {
+				fileName := c.String("fileName")
+				gotaApi, err := api.NewGotaAPI("", "en_us")
+				if err != nil {
+					fmt.Printf("Problem: %v", err)
+					os.Exit(1)
+				}
+				err = gotaApi.MakeGeoDataSVFile(fileName, "|")
+				if err != nil {
+					fmt.Printf("Error:%v", err)
+					os.Exit(1)
+				}
+				fmt.Printf("Wrote file %v successfully\n", fileName)
+
+			},
+		},
+		{
 			Name:        "GetMatchDetails",
 			ShortName:   "md",
 			Usage:       "./gota-api md --matchId [matchId]",

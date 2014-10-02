@@ -69,27 +69,27 @@ func writeFile(fName string, matches []api.MatchDetail) {
 	// Headers
 	writeHeader := func(RadiantWin, Duration, StartTime, MatchId, SequenceNumber, RadiantTowerStatus,
 		DireTowerStatus, RadiantBarracksStatus, DireBarracksStatus, Cluster, FirstBloodTime, HumanPlayers,
-		LobbyType, LeagueId, PositiveVotes, NegativeVotes, GameMode, RadiantCaptain, DireCaptain string) {
-		fmt.Fprintf(writer, "%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\n",
+		LobbyType, LeagueId, PositiveVotes, NegativeVotes, GameMode string) {
+		fmt.Fprintf(writer, "%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\n",
 			RadiantWin, Duration, StartTime, MatchId, SequenceNumber, RadiantTowerStatus,
 			DireTowerStatus, RadiantBarracksStatus, DireBarracksStatus, Cluster, FirstBloodTime, HumanPlayers,
-			LobbyType, LeagueId, PositiveVotes, NegativeVotes, GameMode, RadiantCaptain, DireCaptain)
+			LobbyType, LeagueId, PositiveVotes, NegativeVotes, GameMode)
 	}
-	write := func(RadiantWin bool, Duration, StartTime, MatchId, SequenceNumber, RadiantTowerStatus,
+	write := func(RadiantWin bool, Duration int, StartTime int64, MatchId int, SequenceNumber int64, RadiantTowerStatus,
 		DireTowerStatus, RadiantBarracksStatus, DireBarracksStatus, Cluster, FirstBloodTime, HumanPlayers,
-		LobbyType, LeagueId, PositiveVotes, NegativeVotes, GameMode, RadiantCaptain, DireCaptain int) {
-		fmt.Fprintf(writer, "%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\n",
+		LobbyType, LeagueId, PositiveVotes, NegativeVotes, GameMode int) {
+		fmt.Fprintf(writer, "%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\n",
 			RadiantWin, Duration, StartTime, MatchId, SequenceNumber, RadiantTowerStatus,
 			DireTowerStatus, RadiantBarracksStatus, DireBarracksStatus, Cluster, FirstBloodTime, HumanPlayers,
-			LobbyType, LeagueId, PositiveVotes, NegativeVotes, GameMode, RadiantCaptain, DireCaptain)
+			LobbyType, LeagueId, PositiveVotes, NegativeVotes, GameMode)
 	}
 	writeHeader("radiant_win", "duration", "start_time", "match_id", "match_seq_num", "tower_status_radiant",
 		"tower_status_dire", "barracks_status_radiant", "barracks_status_dire", "cluster", "first_blood_time", "lobby_type", "human_players",
-		"leagueid", "positive_votes", "negative_votes", "game_mode", "radiant_captain", "dire_captain")
+		"leagueid", "positive_votes", "negative_votes", "game_mode")
 	for _, match := range matches {
 		write(match.RadiantWin, match.Duration, match.StartTime, match.MatchId, match.SequenceNumber,
 			match.RadiantTowerStatus, match.DireTowerStatus, match.RadiantBarracksStatus, match.DireBarracksStatus,
 			match.Cluster, match.FirstBloodTime, match.LobbyType, match.HumanPlayers, match.LeagueId, match.PositiveVotes,
-			match.NegativeVotes, match.GameMode, match.RadiantCaptain, match.DireCaptain)
+			match.NegativeVotes, match.GameMode)
 	}
 }

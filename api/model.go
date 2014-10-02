@@ -3,7 +3,9 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
+	"time"
 )
 
 type APIError struct {
@@ -34,7 +36,7 @@ type MatchHistory struct {
 type Match struct {
 	Id             int      `json:"match_id"`
 	SequenceNumber int64    `json:"match_seq_num"`
-	StartTime      int      `json:"start_time"`
+	StartTime      int64    `json:"start_time"`
 	LobbyType      int      `json:"lobby_type"`
 	Players        []Player `json:"players"`
 }
@@ -52,7 +54,7 @@ type MatchDetailResult struct {
 type MatchDetail struct {
 	RadiantWin            bool  `json:"radiant_win"`
 	Duration              int   `json:"duration"`
-	StartTime             int   `json:"start_time"`
+	StartTime             int64 `json:"start_time"`
 	MatchId               int   `json:"match_id"`
 	SequenceNumber        int64 `json:"match_seq_num"`
 	RadiantTowerStatus    int   `json:"tower_status_radiant"`
@@ -166,7 +168,7 @@ func (md *MatchDetail) SV(separator string) string {
 	var inputs []string
 	inputs = append(inputs, writeNumeric(md.RadiantWin))
 	inputs = append(inputs, writeNumeric(md.Duration))
-	inputs = append(inputs, writeNumeric(md.StartTime))
+	inputs = append(inputs, writeNumeric(convertToYYYYMMDDHH(md.StartTime)))
 	inputs = append(inputs, writeNumeric(md.MatchId))
 	inputs = append(inputs, writeNumeric(md.SequenceNumber))
 	inputs = append(inputs, writeNumeric(md.RadiantTowerStatus))
@@ -194,6 +196,17 @@ func (md *MatchDetail) SV(separator string) string {
 	// embed the player profiles as tab separated carriage returned records
 	inputs = append(inputs, strings.Join(players, "\n"))
 	return strings.Join(inputs, separator)
+}
+func convertToYYYYMMDDHH(seconds int64) int {
+	t := time.Unix(seconds, 0)
+	// use data formatting hack
+	stringRepresentation := t.Format("2006010203")
+	// now convert string to int
+	yyyymmddhh, err := strconv.Atoi(stringRepresentation)
+	if err != nil {
+		fmt.Printf("Error parsing string number:%v\n", err)
+	}
+	return yyyymmddhh
 }
 
 func (md *MatchDetail) PlayersArray() []int {
@@ -423,4 +436,33 @@ type UGCFileDetails struct {
 	Filename string `json:"filename"`
 	Url      string `json:"url"`
 	Size     int    `json:"size"`
+}
+
+// from: https://raw.githubusercontent.com/Holek/steam-friends-countries/master/data/steam_countries.json
+
+type GeoData struct {
+	Countries map[string]*Country
+}
+
+type Country struct {
+	Name                     string
+	States                   map[string]*State
+	Longitude                float64
+	Latitude                 float64
+	CoordinatesAccuracyLevel string
+}
+
+type State struct {
+	Name                     string
+	Cities                   map[string]*City
+	Longitude                float64
+	Latitude                 float64
+	CoordinatesAccuracyLevel string
+}
+
+type City struct {
+	Name                     string
+	Longitude                float64
+	Latitude                 float64
+	CoordinatesAccuracyLevel string
 }
