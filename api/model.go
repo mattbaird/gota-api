@@ -115,11 +115,15 @@ func (md *MatchDetail) Region() string {
 		return "US West"
 	case 112:
 		return "US West"
+	case 114:
+		return "US West"
 	case 121:
 		return "US East"
 	case 122:
 		return "US East"
 	case 123:
+		return "US East"
+	case 124:
 		return "US East"
 	case 131:
 		return "Europe West"
@@ -127,8 +131,16 @@ func (md *MatchDetail) Region() string {
 		return "Europe West"
 	case 133:
 		return "Europe West"
+	case 134:
+		return "Europe West"
+	case 135:
+		return "Europe West"
+	case 136:
+		return "Europe West"
+	case 142:
+		return "South Korea"
 	case 143:
-		return "Hong Kong"
+		return "South Korea"
 	case 151:
 		return "Southeast Asia"
 	case 152:
@@ -145,12 +157,22 @@ func (md *MatchDetail) Region() string {
 		return "Russia"
 	case 182:
 		return "Russia"
+	case 183:
+		return "Russia"
+	case 184:
+		return "Russia"
 	case 191:
 		return "Europe East"
 	case 200:
 		return "South America"
+	case 204:
+		return "South America"
 	case 211:
-		return "South Africa"
+		return "South America"
+	case 212:
+		return "South America"
+	case 213:
+		return "South America"
 	case 221:
 		return "China"
 	case 222:
@@ -159,6 +181,57 @@ func (md *MatchDetail) Region() string {
 		return "China" //probably
 	case 231:
 		return "China" //probably
+	default:
+		return "unknown"
+	}
+}
+
+func (md *MatchDetail) GameModeString() string {
+	switch md.Cluster {
+	case 0:
+		return "unknown"
+	case 1:
+		return "All Pick"
+	case 2:
+		return "Captains Mode"
+	case 3:
+		return "Random Draft"
+	case 4:
+		return "Single Draft"
+	case 5:
+		return "All Random"
+	case 6:
+		return "?? INTRO/DEATH ??"
+	case 7:
+		return "The Diretide"
+	case 8:
+		return "Reverse Captains Mode"
+	case 9:
+		return "Greeviling"
+	case 10:
+		return "Tutorial"
+	case 11:
+		return "Mid Only"
+	case 12:
+		return "Least Played"
+	case 13:
+		return "New Player Pool"
+	case 14:
+		return "Compendium Matchmaking"
+	case 15:
+		return "Custom"
+	case 16:
+		return "Captains Draft"
+	case 17:
+		return "Balanced Draft"
+	case 18:
+		return "Ability Draft"
+	case 19:
+		return "?? Event ??"
+	case 20:
+		return "All Random Death Match"
+	case 21:
+		return "1vs1 Solo Mid"
 	default:
 		return "unknown"
 	}
@@ -218,30 +291,37 @@ func (md *MatchDetail) PlayersArray() []int {
 }
 
 type PlayerDetail struct {
-	Id           int `json:"account_id"`
-	PlayerSlot   int `json:"player_slot"`
-	HeroId       int `json:"hero_id"`
-	Item0        int `json:"item_0"`
-	Item1        int `json:"item_1"`
-	Item2        int `json:"item_2"`
-	Item3        int `json:"item_3"`
-	Item4        int `json:"item_4"`
-	Item5        int `json:"item_5"`
-	Kills        int `json:"kills"`
-	Deaths       int `json:"deaths"`
-	Assists      int `json:"assists"`
-	LeaverStatus int `json:"leaver_status"`
-	Gold         int `json:"gold"`
-	LastHits     int `json:"last_hits"`
-	Denies       int `json:"denies"`
-	GoldPerMin   int `json:"gold_per_min"`
-	XpPerMin     int `json:"xp_per_min"`
-	GoldSpent    int `json:"gold_spent"`
-	HeroDamage   int `json:"hero_damage"`
-	TowerDamage  int `json:"tower_damage"`
-	HeroHealing  int `json:"hero_healing"`
-	Level        int `json:"level"`
-	SteamUser    *SteamUser
+	Id              int              `json:"account_id"`
+	PlayerSlot      int              `json:"player_slot"`
+	HeroId          int              `json:"hero_id"`
+	Item0           int              `json:"item_0"`
+	Item1           int              `json:"item_1"`
+	Item2           int              `json:"item_2"`
+	Item3           int              `json:"item_3"`
+	Item4           int              `json:"item_4"`
+	Item5           int              `json:"item_5"`
+	Kills           int              `json:"kills"`
+	Deaths          int              `json:"deaths"`
+	Assists         int              `json:"assists"`
+	LeaverStatus    int              `json:"leaver_status"`
+	Gold            int              `json:"gold"`
+	LastHits        int              `json:"last_hits"`
+	Denies          int              `json:"denies"`
+	GoldPerMin      int              `json:"gold_per_min"`
+	XpPerMin        int              `json:"xp_per_min"`
+	GoldSpent       int              `json:"gold_spent"`
+	HeroDamage      int              `json:"hero_damage"`
+	TowerDamage     int              `json:"tower_damage"`
+	HeroHealing     int              `json:"hero_healing"`
+	Level           int              `json:"level"`
+	AbilityUpgrades []AbilityUpgrade `json:"ability_upgrades,omitempty"`
+	SteamUser       *SteamUser
+}
+
+type AbilityUpgrade struct {
+	Ability int `json:"ability"`
+	Time    int `json:"time"`
+	Level   int `json:"level"`
 }
 
 func (pd *PlayerDetail) SV(separator string) string {
@@ -465,4 +545,22 @@ type City struct {
 	Longitude                float64
 	Latitude                 float64
 	CoordinatesAccuracyLevel string
+}
+
+type Items struct {
+	Items []Item `json:"items"`
+}
+
+type Item struct {
+	Id   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+func (i *Items) GetById(id int) (Item, bool) {
+	for _, item := range i.Items {
+		if item.Id == id {
+			return item, true
+		}
+	}
+	return Item{}, false
 }

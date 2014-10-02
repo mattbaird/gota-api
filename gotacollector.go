@@ -81,7 +81,7 @@ func main() {
 		{
 			Name:        "WriteGeoData",
 			ShortName:   "wgd",
-			Usage:       "./gota-api wgd filename",
+			Usage:       "./gota-api wgd -fileName <fileName>",
 			Description: "Get & Write Geo Data",
 			Flags: []cli.Flag{
 				cli.StringFlag{Name: "fileName", Value: "", Usage: ""},
@@ -94,6 +94,30 @@ func main() {
 					os.Exit(1)
 				}
 				err = gotaApi.MakeGeoDataSVFile(fileName, "|")
+				if err != nil {
+					fmt.Printf("Error:%v", err)
+					os.Exit(1)
+				}
+				fmt.Printf("Wrote file %v successfully\n", fileName)
+
+			},
+		},
+		{
+			Name:        "WriteItemData",
+			ShortName:   "wid",
+			Usage:       "./gota-api wid -fileName <fileName>",
+			Description: "Get & Write Item Data",
+			Flags: []cli.Flag{
+				cli.StringFlag{Name: "fileName", Value: "", Usage: ""},
+			},
+			Action: func(c *cli.Context) {
+				fileName := c.String("fileName")
+				gotaApi, err := api.NewGotaAPI("", "en_us")
+				if err != nil {
+					fmt.Printf("Problem: %v", err)
+					os.Exit(1)
+				}
+				err = gotaApi.MakeItemDataSVFile(fileName, "|")
 				if err != nil {
 					fmt.Printf("Error:%v", err)
 					os.Exit(1)

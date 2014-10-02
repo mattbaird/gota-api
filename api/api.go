@@ -21,11 +21,11 @@ const api_remote_storage_prefix string = "ISteamRemoteStorage"
 const api_match_prefix string = "IDOTA2Match_570"
 const api_match_prefix_debug string = "IDOTA2Match_205790"
 const api_econ_prefix string = "IEconDOTA2_570"
-const debug bool = false
-const use_debug_service = true
+const debug bool = true
+const use_debug_service = false
 
 func getApiMatchPrefix() string {
-	if debug || use_debug_service {
+	if use_debug_service {
 		return api_match_prefix_debug
 	} else {
 		return api_match_prefix
@@ -397,6 +397,43 @@ func (api *GotaAPI) MakeGeoDataSVFile(filename string, separator string) error {
 				_, err = w.WriteString(row + "\n")
 			}
 		}
+	}
+	w.Flush()
+	return err
+}
+
+func (api *GotaAPI) GetItemData() (Items, error) {
+	var retval Items = Items{}
+	var err error = nil
+	file, err := ioutil.ReadFile("./items.json")
+	if err != nil {
+		return retval, err
+	}
+	err = json.Unmarshal(file, &retval)
+	return retval, err
+}
+
+func (api *GotaAPI) MakeItemDataSVFile(filename string, separator string) error {
+	fmt.Println("here1")
+	f, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	fmt.Println("here2")
+	itemData, err := api.GetItemData()
+	if err != nil {
+		return err
+	}
+	fmt.Println("here2")
+	w := bufio.NewWriter(f)
+	for _, item := range itemData.Items {
+		fmt.Printf("%v\n", item)
+		var rowArray []string
+		rowArray = append(rowArray, fmt.Sprintf("%v", item.Id))
+		rowArray = append(rowArray, item.Name)
+		row := strings.Join(rowArray, separator)
+		_, err = w.WriteString(row + "\n")
 	}
 	w.Flush()
 	return err
