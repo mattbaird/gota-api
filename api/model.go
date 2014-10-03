@@ -82,33 +82,6 @@ type MatchDetail struct {
 	Players []PlayerDetail `json:"players"`
 }
 
-/**
-Cluster_ID	Location
-111	US West
-112 US West
-121	US East
-122	US East
-123 US East
-131	Europe West
-132	Europe West
-133	Europe West
-143 Hong Kong
-151	Southeast Asia
-152	Southeast Asia
-153 Southeast Asia
-161	China
-163	China
-171	Australia
-181	Russia
-182	Russia
-191	Europe East
-200	South America
-211 South Africa
-221 China
-222 China
-223 Dotabuff Unknown (Probably China due to having 22 prefix)
-231 Dotabuff Unknown (Also seems to be China, games have players with .CN names and Hanzi names)
-**/
 func (md *MatchDetail) Region() string {
 	switch md.Cluster {
 	case 111:

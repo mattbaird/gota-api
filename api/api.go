@@ -22,7 +22,7 @@ const api_match_prefix string = "IDOTA2Match_570"
 const api_match_prefix_debug string = "IDOTA2Match_205790"
 const api_econ_prefix string = "IEconDOTA2_570"
 const debug bool = true
-const use_debug_service = false
+const use_debug_service = true
 
 func getApiMatchPrefix() string {
 	if use_debug_service {
@@ -414,18 +414,15 @@ func (api *GotaAPI) GetItemData() (Items, error) {
 }
 
 func (api *GotaAPI) MakeItemDataSVFile(filename string, separator string) error {
-	fmt.Println("here1")
 	f, err := os.Create(filename)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
-	fmt.Println("here2")
 	itemData, err := api.GetItemData()
 	if err != nil {
 		return err
 	}
-	fmt.Println("here2")
 	w := bufio.NewWriter(f)
 	for _, item := range itemData.Items {
 		fmt.Printf("%v\n", item)
