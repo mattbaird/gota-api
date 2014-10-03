@@ -378,18 +378,18 @@ func (api *GotaAPI) MakeGeoDataSVFile(filename string, separator string) error {
 		for stateCode, state := range country.States {
 			for cityId, city := range state.Cities {
 				var rowArray []string
-				rowArray = append(rowArray, countryCode)
-				rowArray = append(rowArray, country.Name)
+				rowArray = append(rowArray, trimNonAscii(countryCode))
+				rowArray = append(rowArray, trimNonAscii(country.Name))
 				rowArray = append(rowArray, writeNumeric(country.Longitude))
 				rowArray = append(rowArray, writeNumeric(country.Latitude))
 				//				rowArray = append(rowArray, country.CoordinatesAccuracyLevel)
-				rowArray = append(rowArray, stateCode)
-				rowArray = append(rowArray, state.Name)
+				rowArray = append(rowArray, trimNonAscii(stateCode))
+				rowArray = append(rowArray, trimNonAscii(state.Name))
 				rowArray = append(rowArray, writeNumeric(state.Longitude))
 				rowArray = append(rowArray, writeNumeric(state.Latitude))
 				//				rowArray = append(rowArray, state.CoordinatesAccuracyLevel)
-				rowArray = append(rowArray, cityId)
-				rowArray = append(rowArray, city.Name)
+				rowArray = append(rowArray, trimNonAscii(cityId))
+				rowArray = append(rowArray, trimNonAscii(city.Name))
 				rowArray = append(rowArray, writeNumeric(city.Longitude))
 				rowArray = append(rowArray, writeNumeric(city.Latitude))
 				//				rowArray = append(rowArray, city.CoordinatesAccuracyLevel)
@@ -400,6 +400,16 @@ func (api *GotaAPI) MakeGeoDataSVFile(filename string, separator string) error {
 	}
 	w.Flush()
 	return err
+}
+
+func trimNonAscii(s string) string {
+	var runes []rune
+	for _, r := range s {
+		if strconv.IsPrint(r) {
+			runes = append(runes, r)
+		}
+	}
+	return string(runes)
 }
 
 func (api *GotaAPI) GetItemData() (Items, error) {
