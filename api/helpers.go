@@ -11,3 +11,7 @@ func writeString(input string) string {
 func writeNumeric(input interface{}) string {
 	return fmt.Sprintf("%v", input)
 }
+
+func writeKeyValue(key string, value interface{}) string {
+	return fmt.Sprintf("%s=%v", key, value)
+}

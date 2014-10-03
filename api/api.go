@@ -21,7 +21,7 @@ const api_remote_storage_prefix string = "ISteamRemoteStorage"
 const api_match_prefix string = "IDOTA2Match_570"
 const api_match_prefix_debug string = "IDOTA2Match_205790"
 const api_econ_prefix string = "IEconDOTA2_570"
-const debug bool = true
+const debug bool = false
 const use_debug_service = true
 
 func getApiMatchPrefix() string {
