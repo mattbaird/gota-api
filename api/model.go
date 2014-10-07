@@ -214,6 +214,7 @@ func (md *MatchDetail) SV(separator string) string {
 	var inputs []string
 	inputs = append(inputs, writeNumeric(md.RadiantWin))
 	inputs = append(inputs, writeNumeric(md.Duration))
+	inputs = append(inputs, writeNumeric(md.StartTime))
 	inputs = append(inputs, writeNumeric(convertToYYYYMMDDHH(md.StartTime)))
 	inputs = append(inputs, writeNumeric(md.MatchId))
 	inputs = append(inputs, writeNumeric(md.SequenceNumber))

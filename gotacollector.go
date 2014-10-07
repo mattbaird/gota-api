@@ -44,7 +44,7 @@ func main() {
 				leagueId := c.String("leagueId")
 				matchesRequested := c.Int("matchesRequested")
 				tournamentGamesOnly := c.Bool("tournamentGamesOnly")
-				gotaApi, err := api.NewGotaAPI("", "en_us")
+				gotaApi, err := api.NewGotaAPI("", "en_us", false, false, 2)
 				if err != nil {
 					fmt.Printf("Problem: %v", err)
 					os.Exit(1)
@@ -65,7 +65,7 @@ func main() {
 			Description: "Get Steam Geo Data",
 			Flags:       []cli.Flag{},
 			Action: func(c *cli.Context) {
-				gotaApi, err := api.NewGotaAPI("", "en_us")
+				gotaApi, err := api.NewGotaAPI("", "en_us", false, false, 2)
 				if err != nil {
 					fmt.Printf("Problem: %v", err)
 					os.Exit(1)
@@ -88,7 +88,7 @@ func main() {
 			},
 			Action: func(c *cli.Context) {
 				fileName := c.String("fileName")
-				gotaApi, err := api.NewGotaAPI("", "en_us")
+				gotaApi, err := api.NewGotaAPI("", "en_us", false, false, 2)
 				if err != nil {
 					fmt.Printf("Problem: %v", err)
 					os.Exit(1)
@@ -112,7 +112,7 @@ func main() {
 			},
 			Action: func(c *cli.Context) {
 				fileName := c.String("fileName")
-				gotaApi, err := api.NewGotaAPI("", "en_us")
+				gotaApi, err := api.NewGotaAPI("", "en_us", false, false, 2)
 				if err != nil {
 					fmt.Printf("Problem: %v", err)
 					os.Exit(1)
@@ -136,7 +136,7 @@ func main() {
 			},
 			Action: func(c *cli.Context) {
 				matchId := c.Int("matchId")
-				gotaApi, err := api.NewGotaAPI("", "en_us")
+				gotaApi, err := api.NewGotaAPI("", "en_us", false, false, 2)
 				if err != nil {
 					fmt.Printf("Problem: %v", err)
 					os.Exit(1)
@@ -161,7 +161,7 @@ func main() {
 			Action: func(c *cli.Context) {
 				startAtMatchSeqNum := c.Int("startAtMatchSeqNum")
 				matchesRequested := c.Int("matchesRequested")
-				gotaApi, err := api.NewGotaAPI("", "en_us")
+				gotaApi, err := api.NewGotaAPI("", "en_us", false, false, 2)
 				if err != nil {
 					fmt.Printf("Problem: %v", err)
 					os.Exit(1)
@@ -182,7 +182,7 @@ func main() {
 			Description: "Get heroes",
 			Flags:       []cli.Flag{},
 			Action: func(c *cli.Context) {
-				gotaApi, err := api.NewGotaAPI("", "en_us")
+				gotaApi, err := api.NewGotaAPI("", "en_us", false, false, 2)
 				if err != nil {
 					fmt.Printf("Problem: %v", err)
 					os.Exit(1)
@@ -202,7 +202,7 @@ func main() {
 			Description: "Get League Listings",
 			Flags:       []cli.Flag{},
 			Action: func(c *cli.Context) {
-				gotaApi, err := api.NewGotaAPI("", "en_us")
+				gotaApi, err := api.NewGotaAPI("", "en_us", false, false, 2)
 				if err != nil {
 					fmt.Printf("Problem: %v", err)
 					os.Exit(1)
@@ -222,7 +222,7 @@ func main() {
 			Description: "Get live league games",
 			Flags:       []cli.Flag{},
 			Action: func(c *cli.Context) {
-				gotaApi, err := api.NewGotaAPI("", "en_us")
+				gotaApi, err := api.NewGotaAPI("", "en_us", false, false, 2)
 				if err != nil {
 					fmt.Printf("Problem: %v", err)
 					os.Exit(1)
@@ -247,7 +247,7 @@ func main() {
 			Action: func(c *cli.Context) {
 				startAtTeamId := c.Int("startAtTeamId")
 				teamsRequested := c.Int("teamsRequested")
-				gotaApi, err := api.NewGotaAPI("", "en_us")
+				gotaApi, err := api.NewGotaAPI("", "en_us", false, false, 2)
 				if err != nil {
 					fmt.Printf("Problem: %v", err)
 					os.Exit(1)
@@ -270,7 +270,7 @@ func main() {
 			},
 			Action: func(c *cli.Context) {
 				ids := c.IntSlice("ids")
-				gotaApi, err := api.NewGotaAPI("", "en_us")
+				gotaApi, err := api.NewGotaAPI("", "en_us", false, false, 2)
 				if err != nil {
 					fmt.Printf("Problem: %v", err)
 					os.Exit(1)
