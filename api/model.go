@@ -211,42 +211,73 @@ func (md *MatchDetail) GameModeString() string {
 }
 
 func (md *MatchDetail) SV(separator string) string {
-	var inputs []string
-	inputs = append(inputs, writeNumeric(md.RadiantWin))
-	inputs = append(inputs, writeNumeric(md.Duration))
-	inputs = append(inputs, writeNumeric(md.StartTime))
-	inputs = append(inputs, writeNumeric(convertToYYYYMMDDHH(md.StartTime)))
-	inputs = append(inputs, writeNumeric(md.MatchId))
-	inputs = append(inputs, writeNumeric(md.SequenceNumber))
-	inputs = append(inputs, writeNumeric(md.RadiantTowerStatus))
-	inputs = append(inputs, writeNumeric(md.DireTowerStatus))
-	inputs = append(inputs, writeNumeric(md.RadiantBarracksStatus))
-	inputs = append(inputs, writeNumeric(md.DireBarracksStatus))
-	inputs = append(inputs, writeNumeric(md.Cluster))
-	inputs = append(inputs, writeNumeric(md.FirstBloodTime))
-	inputs = append(inputs, writeNumeric(md.HumanPlayers))
-	inputs = append(inputs, writeNumeric(md.LobbyType))
-	inputs = append(inputs, writeNumeric(md.LeagueId))
-	inputs = append(inputs, writeNumeric(md.PositiveVotes))
-	inputs = append(inputs, writeNumeric(md.NegativeVotes))
-	inputs = append(inputs, writeNumeric(md.GameMode))
-	inputs = append(inputs, writeNumeric(md.RadiantName))
-	inputs = append(inputs, writeNumeric(md.RadiantLogoUrl))
-	inputs = append(inputs, writeNumeric(md.RadiantTeamComplete))
-	inputs = append(inputs, writeNumeric(md.DireName))
-	inputs = append(inputs, writeNumeric(md.DireLogoUrl))
-	inputs = append(inputs, writeNumeric(md.DireTeamComplete))
-	var players []string
+	var matchDetails []string
 	for _, playa := range md.Players {
-		// add stuff from PlayerDetail
-
-		// merge in steam profiles here
-		players = append(players, playa.SV("\t"))
+		var inputs []string
+		inputs = append(inputs, writeNumeric(md.RadiantWin))
+		inputs = append(inputs, writeNumeric(md.Duration))
+		inputs = append(inputs, writeNumeric(md.StartTime))
+		inputs = append(inputs, writeNumeric(convertToYYYYMMDDHH(md.StartTime)))
+		inputs = append(inputs, writeNumeric(md.MatchId))
+		inputs = append(inputs, writeNumeric(md.SequenceNumber))
+		inputs = append(inputs, writeNumeric(md.RadiantTowerStatus))
+		inputs = append(inputs, writeNumeric(md.DireTowerStatus))
+		inputs = append(inputs, writeNumeric(md.RadiantBarracksStatus))
+		inputs = append(inputs, writeNumeric(md.DireBarracksStatus))
+		inputs = append(inputs, writeNumeric(md.Cluster))
+		inputs = append(inputs, writeNumeric(md.FirstBloodTime))
+		inputs = append(inputs, writeNumeric(md.HumanPlayers))
+		inputs = append(inputs, writeNumeric(md.LobbyType))
+		inputs = append(inputs, writeNumeric(md.LeagueId))
+		inputs = append(inputs, writeNumeric(md.PositiveVotes))
+		inputs = append(inputs, writeNumeric(md.NegativeVotes))
+		inputs = append(inputs, writeNumeric(md.GameMode))
+		inputs = append(inputs, writeNumeric(md.RadiantName))
+		inputs = append(inputs, writeNumeric(md.RadiantLogoUrl))
+		inputs = append(inputs, writeNumeric(md.RadiantTeamComplete))
+		inputs = append(inputs, writeNumeric(md.DireName))
+		inputs = append(inputs, writeNumeric(md.DireLogoUrl))
+		inputs = append(inputs, writeNumeric(md.DireTeamComplete))
+		inputs = append(inputs, writeNumeric(playa.Id))
+		inputs = append(inputs, writeNumeric(playa.PlayerSlot))
+		inputs = append(inputs, writeString(getTeam(playa.PlayerSlot))) //team
+		inputs = append(inputs, writeNumeric(playa.HeroId))
+		inputs = append(inputs, writeNumeric(playa.Item0))
+		inputs = append(inputs, writeNumeric(playa.Item1))
+		inputs = append(inputs, writeNumeric(playa.Item2))
+		inputs = append(inputs, writeNumeric(playa.Item3))
+		inputs = append(inputs, writeNumeric(playa.Item4))
+		inputs = append(inputs, writeNumeric(playa.Item5))
+		inputs = append(inputs, writeNumeric(playa.Kills))
+		inputs = append(inputs, writeNumeric(playa.Deaths))
+		inputs = append(inputs, writeNumeric(playa.Assists))
+		inputs = append(inputs, writeNumeric(playa.LeaverStatus))
+		inputs = append(inputs, writeNumeric(playa.Gold))
+		inputs = append(inputs, writeNumeric(playa.LastHits))
+		inputs = append(inputs, writeNumeric(playa.Denies))
+		inputs = append(inputs, writeNumeric(playa.GoldPerMin))
+		inputs = append(inputs, writeNumeric(playa.XpPerMin))
+		inputs = append(inputs, writeNumeric(playa.GoldSpent))
+		inputs = append(inputs, writeNumeric(playa.HeroDamage))
+		inputs = append(inputs, writeNumeric(playa.TowerDamage))
+		inputs = append(inputs, writeNumeric(playa.HeroHealing))
+		inputs = append(inputs, writeNumeric(playa.Level))
+		inputs = append(inputs, playa.SteamSV("|"))
+		record := strings.Join(inputs, separator)
+		matchDetails = append(matchDetails, record)
 	}
-	// embed the player profiles as tab separated carriage returned records
-	inputs = append(inputs, strings.Join(players, "\n"))
-	return strings.Join(inputs, separator)
+	return strings.Join(matchDetails, "\n")
 }
+
+// hero wins if match field radiant_win is true and its player_slot < 5 OR radiant_win is false and its player_slot > 5.
+func getTeam(slot int) string {
+	if slot < 5 {
+		return "Radiant"
+	} else {
+		return "Dire"
+	}
+}
+
 func convertToYYYYMMDDHH(seconds int64) int {
 	t := time.Unix(seconds, 0)
 	// use data formatting hack
@@ -326,6 +357,30 @@ func (pd *PlayerDetail) SV(separator string) string {
 	inputs = append(inputs, writeKeyValue("tower_damage", pd.TowerDamage))
 	inputs = append(inputs, writeKeyValue("hero_healing", pd.HeroHealing))
 	inputs = append(inputs, writeKeyValue("level", pd.Level))
+	if pd.SteamUser != nil {
+		inputs = append(inputs, writeKeyValue("steam_id", pd.SteamUser.Id))
+		inputs = append(inputs, writeKeyValue("visibility_state", pd.SteamUser.VisibilityState))
+		inputs = append(inputs, writeKeyValue("profile_state", pd.SteamUser.ProfileState))
+		inputs = append(inputs, writeKeyValue("persona_name", pd.SteamUser.PersonaName))
+		inputs = append(inputs, writeKeyValue("last_logoff", pd.SteamUser.LastLogoff))
+		inputs = append(inputs, writeKeyValue("profile_url", pd.SteamUser.ProfileUrl))
+		inputs = append(inputs, writeKeyValue("avatar", pd.SteamUser.Avatar))
+		inputs = append(inputs, writeKeyValue("avatar_medium", pd.SteamUser.AvatarMedium))
+		inputs = append(inputs, writeKeyValue("avatar_full", pd.SteamUser.AvatarFull))
+		inputs = append(inputs, writeKeyValue("persona_state", pd.SteamUser.PersonaState))
+		inputs = append(inputs, writeKeyValue("real_name", pd.SteamUser.RealName))
+		inputs = append(inputs, writeKeyValue("primary_clan_id", pd.SteamUser.PrimaryClanId))
+		inputs = append(inputs, writeKeyValue("time_created", pd.SteamUser.TimeCreated))
+		inputs = append(inputs, writeKeyValue("persona_state_flags", pd.SteamUser.PersonaStateFlags))
+		inputs = append(inputs, writeKeyValue("country_code", pd.SteamUser.CountryCode))
+		inputs = append(inputs, writeKeyValue("state", pd.SteamUser.State))
+		inputs = append(inputs, writeKeyValue("city_id", pd.SteamUser.CityId))
+	}
+	return strings.Join(inputs, separator)
+}
+
+func (pd *PlayerDetail) SteamSV(separator string) string {
+	var inputs []string
 	if pd.SteamUser != nil {
 		inputs = append(inputs, writeKeyValue("steam_id", pd.SteamUser.Id))
 		inputs = append(inputs, writeKeyValue("visibility_state", pd.SteamUser.VisibilityState))
