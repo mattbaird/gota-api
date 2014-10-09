@@ -218,6 +218,9 @@ func (md *MatchDetail) SV(separator string) string {
 		inputs = append(inputs, writeNumeric(md.Duration))
 		inputs = append(inputs, writeNumeric(md.StartTime))
 		inputs = append(inputs, writeNumeric(convertToYYYYMMDDHH(md.StartTime)))
+		inputs = append(inputs, writeNumeric(convertToYYYYMMDDHHMM(md.StartTime)))
+		//	inputs = append(inputs, writeNumeric(convertToYYYYMMDDHHMM(md.StartTime+int64(md.Duration))))
+		inputs = append(inputs, writeNumeric(convertToYYYYMMDDHHMM(time.Now().Unix())))
 		inputs = append(inputs, writeNumeric(md.MatchId))
 		inputs = append(inputs, writeNumeric(md.SequenceNumber))
 		inputs = append(inputs, writeNumeric(md.RadiantTowerStatus))
@@ -282,6 +285,18 @@ func convertToYYYYMMDDHH(seconds int64) int {
 	t := time.Unix(seconds, 0)
 	// use data formatting hack
 	stringRepresentation := t.Format("2006010203")
+	// now convert string to int
+	yyyymmddhh, err := strconv.Atoi(stringRepresentation)
+	if err != nil {
+		fmt.Printf("Error parsing string number:%v\n", err)
+	}
+	return yyyymmddhh
+}
+
+func convertToYYYYMMDDHHMM(seconds int64) int {
+	t := time.Unix(seconds, 0)
+	// use data formatting hack
+	stringRepresentation := t.Format("200601020304")
 	// now convert string to int
 	yyyymmddhh, err := strconv.Atoi(stringRepresentation)
 	if err != nil {
