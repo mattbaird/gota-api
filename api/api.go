@@ -289,7 +289,7 @@ func (api *GotaAPI) GetPlayerSummaries(ids ...int) (SteamUsers, error) {
 	return retval, err
 }
 
-func (api *GotaAPI) GetRemoveFileDetails(ugcId int64) (UGCFileDetails, error) {
+func (api *GotaAPI) GetRemoteFileDetails(ugcId int64) (UGCFileDetails, error) {
 	var retval UGCFileDetails = UGCFileDetails{}
 	parameters := make(map[string]interface{})
 	parameters["ugcid"] = ugcId
