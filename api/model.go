@@ -265,7 +265,7 @@ func (md *MatchDetail) SV(separator string) string {
 		inputs = append(inputs, writeNumeric(playa.TowerDamage))
 		inputs = append(inputs, writeNumeric(playa.HeroHealing))
 		inputs = append(inputs, writeNumeric(playa.Level))
-		inputs = append(inputs, playa.SteamSV("|"))
+		inputs = append(inputs, playa.SteamSV(","))
 		record := strings.Join(inputs, separator)
 		matchDetails = append(matchDetails, record)
 	}
@@ -415,7 +415,8 @@ func (pd *PlayerDetail) SteamSV(separator string) string {
 		inputs = append(inputs, writeKeyValue("state", pd.SteamUser.State))
 		inputs = append(inputs, writeKeyValue("city_id", pd.SteamUser.CityId))
 	}
-	return strings.Join(inputs, separator)
+	tmp := strings.Join(inputs, separator)
+	return tmp
 }
 
 type Heroes struct {
