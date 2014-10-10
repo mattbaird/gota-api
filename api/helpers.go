@@ -22,6 +22,7 @@ func escape(value interface{}) interface{} {
 	case string:
 		tmp := strings.Replace(v, "|", "&#124;", 1)
 		tmp = strings.Replace(v, "=", "&#61;", 1)
+		tmp = strings.Replace(v, ",", "&#44;", 1)
 		return tmp
 	}
 	return value
