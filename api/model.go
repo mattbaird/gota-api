@@ -284,7 +284,7 @@ func getTeam(slot int) string {
 func convertToYYYYMMDDHH(seconds int64) int {
 	t := time.Unix(seconds, 0)
 	// use data formatting hack
-	stringRepresentation := t.Format("2006010215")
+	stringRepresentation := t.Format("2006010203")
 	// now convert string to int
 	yyyymmddhh, err := strconv.Atoi(stringRepresentation)
 	if err != nil {
@@ -296,7 +296,7 @@ func convertToYYYYMMDDHH(seconds int64) int {
 func convertToYYYYMMDDHHMM(seconds int64) int {
 	t := time.Unix(seconds, 0)
 	// use data formatting hack
-	stringRepresentation := t.Format("200601021504")
+	stringRepresentation := t.Format("200601020304")
 	// now convert string to int
 	yyyymmddhh, err := strconv.Atoi(stringRepresentation)
 	if err != nil {
