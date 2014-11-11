@@ -272,6 +272,11 @@ func (md *MatchDetail) SV(separator string) string {
 	return strings.Join(matchDetails, "\n")
 }
 
+func (md *MatchDetail) Json() string {
+	b, _ := json.Marshal(md)
+	return string(b)
+}
+
 // hero wins if match field radiant_win is true and its player_slot < 5 OR radiant_win is false and its player_slot > 5.
 func getTeam(slot int) string {
 	if slot < 5 {

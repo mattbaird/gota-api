@@ -22,7 +22,8 @@ func main() {
 			},
 			Action: func(c *cli.Context) {
 				f := c.String("file")
-				gotaApi, err := api.NewGotaAPI("", "en_us")
+
+				gotaApi, err := api.NewGotaAPI("", "en_us", false, false, 10)
 				if err != nil {
 					fmt.Printf("Error:%v\n", err)
 				}
