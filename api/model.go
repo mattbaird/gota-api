@@ -79,7 +79,7 @@ type MatchDetail struct {
 	DireLogoUrl         string `json:"-"`
 	DireTeamComplete    bool   `json:"dire_team_complete,omit_empty"`
 	//serialize players into embedded structure
-	Players []PlayerDetail `json:"players"`
+	Players []PlayerDetail `json:"players,omitempty"`
 }
 
 func (md *MatchDetail) Region() string {
@@ -343,7 +343,7 @@ type PlayerDetail struct {
 	HeroHealing     int              `json:"hero_healing"`
 	Level           int              `json:"level"`
 	AbilityUpgrades []AbilityUpgrade `json:"ability_upgrades,omitempty"`
-	SteamUser       *SteamUser
+	SteamUser       *SteamUser       `json:"steam_user,omitempty"`
 }
 
 type AbilityUpgrade struct {
