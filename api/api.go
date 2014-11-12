@@ -99,16 +99,16 @@ func runGotaRaw(api *GotaAPI, requestUrl string, r interface{}) error {
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
-	if api.Debug {
+	if err != nil && api.Debug {
 		log.Printf("Response Body:%s", string(body))
 	}
 	if err = errorCheck(body); err != nil {
 		return err
 	}
 	err = json.Unmarshal(body, &r)
+	if err != nil && api.Debug {
+		log.Printf("Response Body:%s", string(body))
+	}
 	return err
 }
 
