@@ -3,7 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/willf/bitset"
+	"math/big"
 	"strconv"
 	"strings"
 	"time"
@@ -43,9 +43,10 @@ type Match struct {
 }
 
 type Player struct {
-	Id         int  `json:"account_id"`
-	PlayerSlot uint `json:"player_slot"`
-	HeroId     int  `json:"hero_id"`
+	Id         int    `json:"account_id,omitempty"`
+	PlayerSlot uint   `json:"player_slot,omitempty"`
+	Team       string `json:"team,omitempty"`
+	HeroId     int    `json:"hero_id,omitempty"`
 }
 
 type MatchDetailResult struct {
@@ -274,16 +275,23 @@ func (md *MatchDetail) SV(separator string) string {
 }
 
 func (md *MatchDetail) Json() string {
+	// at json serialization time, assign the team
+	for i, playa := range md.Players {
+		md.Players[i].Team = getTeam(playa.PlayerSlot)
+	}
 	b, _ := json.Marshal(md)
 	return string(b)
 }
 
+// A player's slot is returned via an 8-bit unsigned integer.
+// The first bit represent the player's team, false if Radiant and true if dire.
+// The final three bits represent the player's position in that team, from 0-4.
 func getTeam(slot uint) string {
-	v := bitset.New(slot)
-	if v.Test(0) {
-		return "radiant"
-	} else {
+	// false is radiant, true is dire.
+	if big.NewInt(int64(slot)).Bit(7) == 0 {
 		return "Dire"
+	} else {
+		return "Radiant"
 	}
 }
 
@@ -322,6 +330,7 @@ func (md *MatchDetail) PlayersArray() []int {
 type PlayerDetail struct {
 	Id              int              `json:"account_id"`
 	PlayerSlot      uint             `json:"player_slot"`
+	Team            string           `json:"team,omitempty"`
 	HeroId          int              `json:"hero_id"`
 	Item0           int              `json:"item_0"`
 	Item1           int              `json:"item_1"`
