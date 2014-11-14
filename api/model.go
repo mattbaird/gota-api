@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/willf/bitset"
 	"strconv"
 	"strings"
 	"time"
@@ -42,9 +43,9 @@ type Match struct {
 }
 
 type Player struct {
-	Id         int `json:"account_id"`
-	PlayerSlot int `json:"player_slot"`
-	HeroId     int `json:"hero_id"`
+	Id         int  `json:"account_id"`
+	PlayerSlot uint `json:"player_slot"`
+	HeroId     int  `json:"hero_id"`
 }
 
 type MatchDetailResult struct {
@@ -277,10 +278,10 @@ func (md *MatchDetail) Json() string {
 	return string(b)
 }
 
-// hero wins if match field radiant_win is true and its player_slot < 5 OR radiant_win is false and its player_slot > 5.
-func getTeam(slot int) string {
-	if slot < 5 {
-		return "Radiant"
+func getTeam(slot uint) string {
+	v := bitset.New(slot)
+	if v.Test(0) {
+		return "radiant"
 	} else {
 		return "Dire"
 	}
@@ -320,7 +321,7 @@ func (md *MatchDetail) PlayersArray() []int {
 
 type PlayerDetail struct {
 	Id              int              `json:"account_id"`
-	PlayerSlot      int              `json:"player_slot"`
+	PlayerSlot      uint             `json:"player_slot"`
 	HeroId          int              `json:"hero_id"`
 	Item0           int              `json:"item_0"`
 	Item1           int              `json:"item_1"`
