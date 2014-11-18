@@ -388,22 +388,22 @@ func (pd *PlayerDetail) SV(separator string) string {
 	inputs = append(inputs, writeKeyValue("hero_healing", pd.HeroHealing))
 	inputs = append(inputs, writeKeyValue("level", pd.Level))
 	if pd.SteamUser != nil {
-		inputs = append(inputs, writeKeyValue("steam_id", pd.SteamUser.Id))
+		inputs = append(inputs, writeKeyValue("steam_id", trimReservedCharacters(trimNonAscii(pd.SteamUser.Id))))
 		inputs = append(inputs, writeKeyValue("visibility_state", pd.SteamUser.VisibilityState))
 		inputs = append(inputs, writeKeyValue("profile_state", pd.SteamUser.ProfileState))
-		inputs = append(inputs, writeKeyValue("persona_name", pd.SteamUser.PersonaName))
+		inputs = append(inputs, writeKeyValue("persona_name", trimReservedCharacters(trimNonAscii(pd.SteamUser.PersonaName))))
 		inputs = append(inputs, writeKeyValue("last_logoff", pd.SteamUser.LastLogoff))
-		inputs = append(inputs, writeKeyValue("profile_url", pd.SteamUser.ProfileUrl))
-		inputs = append(inputs, writeKeyValue("avatar", pd.SteamUser.Avatar))
-		inputs = append(inputs, writeKeyValue("avatar_medium", pd.SteamUser.AvatarMedium))
-		inputs = append(inputs, writeKeyValue("avatar_full", pd.SteamUser.AvatarFull))
+		inputs = append(inputs, writeKeyValue("profile_url", trimReservedCharacters(trimNonAscii(pd.SteamUser.ProfileUrl))))
+		inputs = append(inputs, writeKeyValue("avatar", trimReservedCharacters(trimNonAscii(pd.SteamUser.Avatar))))
+		inputs = append(inputs, writeKeyValue("avatar_medium", trimReservedCharacters(trimNonAscii(pd.SteamUser.AvatarMedium))))
+		inputs = append(inputs, writeKeyValue("avatar_full", trimReservedCharacters(trimNonAscii(pd.SteamUser.AvatarFull))))
 		inputs = append(inputs, writeKeyValue("persona_state", pd.SteamUser.PersonaState))
-		inputs = append(inputs, writeKeyValue("real_name", pd.SteamUser.RealName))
-		inputs = append(inputs, writeKeyValue("primary_clan_id", pd.SteamUser.PrimaryClanId))
+		inputs = append(inputs, writeKeyValue("real_name", trimReservedCharacters(trimNonAscii(pd.SteamUser.RealName))))
+		inputs = append(inputs, writeKeyValue("primary_clan_id", trimReservedCharacters(trimNonAscii(pd.SteamUser.PrimaryClanId))))
 		inputs = append(inputs, writeKeyValue("time_created", pd.SteamUser.TimeCreated))
 		inputs = append(inputs, writeKeyValue("persona_state_flags", pd.SteamUser.PersonaStateFlags))
-		inputs = append(inputs, writeKeyValue("country_code", pd.SteamUser.CountryCode))
-		inputs = append(inputs, writeKeyValue("state", pd.SteamUser.State))
+		inputs = append(inputs, writeKeyValue("country_code", trimReservedCharacters(trimNonAscii(pd.SteamUser.CountryCode))))
+		inputs = append(inputs, writeKeyValue("state", trimReservedCharacters(trimNonAscii(pd.SteamUser.State))))
 		inputs = append(inputs, writeKeyValue("city_id", pd.SteamUser.CityId))
 	}
 	return strings.Join(inputs, separator)
@@ -412,26 +412,34 @@ func (pd *PlayerDetail) SV(separator string) string {
 func (pd *PlayerDetail) SteamSV(separator string) string {
 	var inputs []string
 	if pd.SteamUser != nil {
-		inputs = append(inputs, writeKeyValue("steam_id", pd.SteamUser.Id))
+		inputs = append(inputs, writeKeyValue("steam_id", trimReservedCharacters(trimNonAscii(pd.SteamUser.Id))))
 		inputs = append(inputs, writeKeyValue("visibility_state", pd.SteamUser.VisibilityState))
 		inputs = append(inputs, writeKeyValue("profile_state", pd.SteamUser.ProfileState))
-		inputs = append(inputs, writeKeyValue("persona_name", pd.SteamUser.PersonaName))
+		inputs = append(inputs, writeKeyValue("persona_name", trimReservedCharacters(trimNonAscii(pd.SteamUser.PersonaName))))
 		inputs = append(inputs, writeKeyValue("last_logoff", pd.SteamUser.LastLogoff))
-		inputs = append(inputs, writeKeyValue("profile_url", pd.SteamUser.ProfileUrl))
-		inputs = append(inputs, writeKeyValue("avatar", pd.SteamUser.Avatar))
-		inputs = append(inputs, writeKeyValue("avatar_medium", pd.SteamUser.AvatarMedium))
-		inputs = append(inputs, writeKeyValue("avatar_full", pd.SteamUser.AvatarFull))
+		inputs = append(inputs, writeKeyValue("profile_url", trimReservedCharacters(trimNonAscii(pd.SteamUser.ProfileUrl))))
+		inputs = append(inputs, writeKeyValue("avatar", trimReservedCharacters(trimNonAscii(pd.SteamUser.Avatar))))
+		inputs = append(inputs, writeKeyValue("avatar_medium", trimReservedCharacters(trimNonAscii(pd.SteamUser.AvatarMedium))))
+		inputs = append(inputs, writeKeyValue("avatar_full", trimReservedCharacters(trimNonAscii(pd.SteamUser.AvatarFull))))
 		inputs = append(inputs, writeKeyValue("persona_state", pd.SteamUser.PersonaState))
-		inputs = append(inputs, writeKeyValue("real_name", pd.SteamUser.RealName))
-		inputs = append(inputs, writeKeyValue("primary_clan_id", pd.SteamUser.PrimaryClanId))
+		inputs = append(inputs, writeKeyValue("real_name", trimReservedCharacters(trimNonAscii(pd.SteamUser.RealName))))
+		inputs = append(inputs, writeKeyValue("primary_clan_id", trimReservedCharacters(trimNonAscii(pd.SteamUser.PrimaryClanId))))
 		inputs = append(inputs, writeKeyValue("time_created", pd.SteamUser.TimeCreated))
 		inputs = append(inputs, writeKeyValue("persona_state_flags", pd.SteamUser.PersonaStateFlags))
-		inputs = append(inputs, writeKeyValue("country_code", pd.SteamUser.CountryCode))
-		inputs = append(inputs, writeKeyValue("state", pd.SteamUser.State))
+		inputs = append(inputs, writeKeyValue("country_code", trimReservedCharacters(trimNonAscii(pd.SteamUser.CountryCode))))
+		inputs = append(inputs, writeKeyValue("state", trimReservedCharacters(trimNonAscii(pd.SteamUser.State))))
 		inputs = append(inputs, writeKeyValue("city_id", pd.SteamUser.CityId))
 	}
 	tmp := strings.Join(inputs, separator)
 	return tmp
+}
+
+func trimReservedCharacters(s string) string {
+	var retval string = s
+	retval = strings.Replace(retval, "|", "*", -1)
+	retval = strings.Replace(retval, ",", "'", -1)
+	retval = strings.Replace(retval, "\n", " ", -1)
+	return retval
 }
 
 type Heroes struct {
